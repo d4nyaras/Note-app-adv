@@ -1,10 +1,10 @@
-import NewNoteForm from "../components/NewNoteForm";
+import NoteForm from "../components/NoteForm";
 
 const NewNote: React.FC = () => {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
+    <div>
       <h1>New Note</h1>
-      <NewNoteForm />
+      <NoteForm />
     </div>
   );
 };
