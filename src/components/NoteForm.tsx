@@ -10,27 +10,45 @@ import {
 import Select from "react-select/creatable";
 import { Link } from "react-router-dom";
 import { FormEvent, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 
-import { NoteDate, Tag } from "../App";
+import { NoteData, Tag } from "../App";
 
 type NoteFromProps = {
-  onSubmit: (data: NoteDate) => void;
-};
+  onSubmit: (data: NoteData) => void;
+  onAddTag: (tag: Tag) => void;
+  availableTags: Tag[];
+} & Partial<NoteData>;
 
-function YourComponent({ onSubmit }: NoteFromProps) {
+function NoteFrom({
+  onSubmit,
+  onAddTag,
+  availableTags,
+  title = "",
+  markdown = "",
+  tags = [],
+}: NoteFromProps) {
   const titleRef = useRef<HTMLInputElement | null>(null);
-  const markdownRef = useRef<HTMLInputElement | null>(null);
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const markdownRef = useRef<HTMLTextAreaElement | null>(null);
+  const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
+
+  const navigate = useNavigate();
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
+
+    const titleValue = titleRef.current?.value ?? "";
+    const markdownValue = markdownRef.current?.value ?? "";
     onSubmit({
-      title: titleRef.current.value,
-      markdown: markdownRef.current.value,
-      tags: [],
+      title: titleValue,
+      markdown: markdownValue,
+      tags: selectedTags,
     });
+    navigate("/");
   }
 
+  console.log(tags);
   return (
     <Form
       className="d-flex flex-column "
@@ -41,7 +59,12 @@ function YourComponent({ onSubmit }: NoteFromProps) {
         <Col sm={12} md={6}>
           <FormGroup controlId="title-input">
             <FormLabel>Title</FormLabel>
-            <FormControl type="input" required ref={titleRef} />
+            <FormControl
+              type="input"
+              required
+              ref={titleRef}
+              defaultValue={title}
+            />
           </FormGroup>
         </Col>
 
@@ -50,7 +73,16 @@ function YourComponent({ onSubmit }: NoteFromProps) {
             <FormLabel>Tags</FormLabel>
             <Select
               isMulti
+              onCreateOption={(label) => {
+                console.log(label);
+                const newTag = { id: uuidv4(), label };
+                onAddTag(newTag);
+                setSelectedTags((prev) => [...prev, newTag]);
+              }}
               value={selectedTags.map((tag) => {
+                return { label: tag.label, value: tag.id };
+              })}
+              options={availableTags.map((tag) => {
                 return { label: tag.label, value: tag.id };
               })}
               onChange={(tags) => {
@@ -68,7 +100,13 @@ function YourComponent({ onSubmit }: NoteFromProps) {
         <Col>
           <FormGroup controlId="area-input">
             <FormLabel>Body</FormLabel>
-            <FormControl as="textarea" rows={15} required ref={markdownRef} />
+            <FormControl
+              as="textarea"
+              rows={15}
+              required
+              ref={markdownRef}
+              defaultValue={markdown}
+            />
           </FormGroup>
         </Col>
       </Row>
@@ -86,4 +124,4 @@ function YourComponent({ onSubmit }: NoteFromProps) {
   );
 }
 
-export default YourComponent;
+export default NoteFrom;
