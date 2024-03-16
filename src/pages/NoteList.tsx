@@ -1,4 +1,5 @@
 import { useMemo, useState, CSSProperties } from "react";
+import "../index.css";
 
 import { Link } from "react-router-dom";
 import {
@@ -14,6 +15,7 @@ import {
   CardBody,
   Badge,
   Modal,
+  InputGroup,
 } from "react-bootstrap";
 import Select, { StylesConfig } from "react-select";
 import { Tag, Note } from "../App";
@@ -82,7 +84,9 @@ const NoteList = ({
         <Col className="d-flex justify-content-end">
           <Stack gap={2} direction="horizontal">
             <Link to="/new">
-              <Button className="rounded-pill">Create</Button>
+              <Button className="rounded-pill" variant="primary">
+                Create
+              </Button>
             </Link>
             <Button
               variant="outline-secondary"
@@ -191,13 +195,12 @@ function EditTagsModal({
 }: EditTagsModalProps) {
   return (
     <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Edit Tags</Modal.Title>
+      <Modal.Header>
         <Modal.Body>
           <Form>
             <Stack>
               {availableTags.map((tag) => (
-                <Row key={tag.id}>
+                <Row key={tag.id} className="align-items-center">
                   <Col>
                     <FormControl
                       type="text"
@@ -207,8 +210,9 @@ function EditTagsModal({
                   </Col>
                   <Col xs="auto">
                     <Button
-                      variant="outline-danger"
+                      variant="outline-primary"
                       onClick={() => onDelete(tag.id)}
+                      className="my-2"
                     >
                       &times;
                     </Button>

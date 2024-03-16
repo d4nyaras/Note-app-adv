@@ -7,3 +7,7 @@
 .horizontal-stack > * {
   display: inline-block;
 }
+
+:root {
+  --primary-color: pink;
+}
