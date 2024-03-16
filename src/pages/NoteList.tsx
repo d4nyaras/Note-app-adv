@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, CSSProperties } from "react";
+import "../index.css";
 
 import { Link } from "react-router-dom";
 import {
@@ -14,8 +15,9 @@ import {
   CardBody,
   Badge,
   Modal,
+  InputGroup,
 } from "react-bootstrap";
-import Select from "react-select";
+import Select, { StylesConfig } from "react-select";
 import { Tag, Note } from "../App";
 import styles from "../NoteBox.module.css";
 
@@ -50,6 +52,13 @@ const NoteList = ({
   const [title, setTitle] = useState("");
   const [editTagsModalOpen, setEditTagModalOpen] = useState(false);
 
+  const customStyles: any = {
+    control: (provided: CSSProperties) => ({
+      ...provided,
+      borderRadius: "30px",
+    }),
+  };
+
   const filteredNotes = useMemo(() => {
     return notes.filter((note) => {
       return (
@@ -64,19 +73,24 @@ const NoteList = ({
   }, [notes, selectedTags, title]);
 
   return (
-    <div className="gap-4">
-      <Row className="justify-content-between align-items-center w-100">
-        <Col sm={12} md={6}>
-          <h1>Notes</h1>
+    <div style={{ gap: "30px" }}>
+      <Row className="d-flex justify-content-between align-items-center w-100 my-3">
+        <Col>
+          <i
+            className="bi bi-brightness-high-fill"
+            style={{ fontSize: "25px" }}
+          ></i>
         </Col>
-        <Col sm={12} md={6} className="d-flex justify-content-end">
+        <Col className="d-flex justify-content-end">
           <Stack gap={2} direction="horizontal">
             <Link to="/new">
-              <Button>Create</Button>
+              <Button className="rounded-pill" variant="primary">
+                Create
+              </Button>
             </Link>
             <Button
               variant="outline-secondary"
-              className="mx-3"
+              className="mx-3 rounded-pill"
               onClick={() => setEditTagModalOpen(true)}
             >
               Edit Tags
@@ -87,11 +101,12 @@ const NoteList = ({
 
       <Form>
         <Row className="justify-content-between align-items-center w-100">
-          <Col sm={12} md={6}>
+          <Col sm={12} md={6} className="my-3">
             <FormGroup controlId="title-input">
-              <FormLabel>Title</FormLabel>
               <FormControl
                 type="input"
+                className=" rounded-pill"
+                placeholder="Title"
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -100,9 +115,10 @@ const NoteList = ({
           </Col>
           <Col sm={12} md={6}>
             <FormGroup controlId="tag-input">
-              <FormLabel>Tags</FormLabel>
               <Select
+                styles={customStyles}
                 isMulti
+                placeholder="Tags"
                 value={selectedTags.map((tag) => {
                   return { label: tag.label, value: tag.id };
                 })}
@@ -121,10 +137,10 @@ const NoteList = ({
           </Col>
         </Row>
       </Form>
-      <Row sm={2} lg={3} xl={4} className="g-4">
+      <Row>
         {filteredNotes.map((note) => {
           return (
-            <Col key={note.id}>
+            <Col key={note.id} xs={12} md={6} lg={4} xl={3} className="my-3">
               <NoteCart id={note.id} title={note.title} tags={note.tags} />
             </Col>
           );
@@ -148,14 +164,10 @@ function NoteCart({ id, title, tags }: simplifyNoteProps) {
     <Card
       as={Link}
       to={`/${id}`}
-      className={`h-100 text-reset text-text-decoration-none my-4  ${styles.card}`}
-      style={{ border: "2px solid black" }}
+      className={`h-100 text-reset text-text-decoration-none my-4   ${styles.card}`}
     >
       <CardBody>
-        <Stack
-          gap={2}
-          className="align-items-center justify-content-center h-100"
-        >
+        <Stack className="align-items-center justify-content-center h-100 ">
           <span className="fs-5">{title}</span>
           {tags.length > 0 && (
             <Stack direction="horizontal" gap={3} className="flex-wrap">
@@ -183,13 +195,12 @@ function EditTagsModal({
 }: EditTagsModalProps) {
   return (
     <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Edit Tags</Modal.Title>
+      <Modal.Header>
         <Modal.Body>
           <Form>
             <Stack>
               {availableTags.map((tag) => (
-                <Row key={tag.id}>
+                <Row key={tag.id} className="align-items-center">
                   <Col>
                     <FormControl
                       type="text"
@@ -199,8 +210,9 @@ function EditTagsModal({
                   </Col>
                   <Col xs="auto">
                     <Button
-                      variant="outline-danger"
+                      variant="outline-primary"
                       onClick={() => onDelete(tag.id)}
+                      className="my-2"
                     >
                       &times;
                     </Button>

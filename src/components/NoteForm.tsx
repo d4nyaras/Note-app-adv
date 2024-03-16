@@ -9,7 +9,7 @@ import {
 } from "react-bootstrap";
 import Select from "react-select/creatable";
 import { Link } from "react-router-dom";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useRef, useState, CSSProperties } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 
@@ -32,6 +32,13 @@ function NoteFrom({
   const titleRef = useRef<HTMLInputElement | null>(null);
   const markdownRef = useRef<HTMLTextAreaElement | null>(null);
   const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
+
+  const customStyles: any = {
+    control: (provided: CSSProperties) => ({
+      ...provided,
+      borderRadius: "30px",
+    }),
+  };
 
   const navigate = useNavigate();
 
@@ -61,6 +68,7 @@ function NoteFrom({
             <FormLabel>Title</FormLabel>
             <FormControl
               type="input"
+              className="rounded-pill"
               required
               ref={titleRef}
               defaultValue={title}
@@ -73,6 +81,7 @@ function NoteFrom({
             <FormLabel>Tags</FormLabel>
             <Select
               isMulti
+              styles={customStyles}
               onCreateOption={(label) => {
                 console.log(label);
                 const newTag = { id: uuidv4(), label };
@@ -111,11 +120,15 @@ function NoteFrom({
         </Col>
       </Row>
       <Row className=" w-100 d-flex flex-row justify-content-end">
-        <Button type="submit" variant="primary">
+        <Button type="submit" variant="primary" className=" rounded-pill">
           Save
         </Button>
         <Link to="..">
-          <Button type="button" variant="outline-primary" className="mx-3">
+          <Button
+            type="button"
+            variant="outline-primary"
+            className="mx-3 rounded-pill"
+          >
             Cancel
           </Button>
         </Link>
