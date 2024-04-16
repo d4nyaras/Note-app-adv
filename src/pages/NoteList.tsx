@@ -1,4 +1,4 @@
-import { useMemo, useState, CSSProperties } from "react";
+import { useMemo, useState, CSSProperties, useEffect } from "react";
 import "../index.css";
 
 import { Link } from "react-router-dom";
@@ -51,6 +51,18 @@ const NoteList = ({
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [title, setTitle] = useState("");
   const [editTagsModalOpen, setEditTagModalOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    if (darkMode) {
+      // this line code change dynamic body html element className
+      document.body.classList.add("dark-mode");
+      document.body.classList.remove("light-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+      document.body.classList.add("light-mode");
+    }
+  }, [darkMode]);
 
   const customStyles: any = {
     control: (provided: CSSProperties) => ({
@@ -72,14 +84,27 @@ const NoteList = ({
     });
   }, [notes, selectedTags, title]);
 
+  const handleMode = () => {
+    setDarkMode(!darkMode);
+  };
+
   return (
     <div style={{ gap: "30px" }}>
       <Row className="d-flex justify-content-between align-items-center w-100 my-3">
         <Col>
-          <i
-            className="bi bi-brightness-high-fill"
-            style={{ fontSize: "25px" }}
-          ></i>
+          {!darkMode ? (
+            <i
+              className="bi bi-brightness-high-fill "
+              style={{ fontSize: "25px" }}
+              onClick={handleMode}
+            ></i>
+          ) : (
+            <i
+              className="bi bi-moon"
+              style={{ fontSize: "25px" }}
+              onClick={handleMode}
+            ></i>
+          )}
         </Col>
         <Col className="d-flex justify-content-end">
           <Stack gap={2} direction="horizontal">

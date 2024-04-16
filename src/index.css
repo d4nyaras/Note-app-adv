@@ -4,10 +4,16 @@
   box-sizing: border-box;
 }
 
-.horizontal-stack > * {
-  display: inline-block;
+/* Light mode */
+.light-mode {
+  background-color: #ffffff;
+  color: #000000;
+  transition: all 0.4s ease;
 }
 
-:root {
-  --primary-color: pink;
+/* Dark mode */
+.dark-mode {
+  background-color: #171717;
+  color: #ffffff;
+  transition: all 0.4s ease;
 }
